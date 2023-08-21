@@ -1,5 +1,6 @@
 package com.wj.modbustcp.connect;
 
+import com.serotonin.modbus4j.Modbus;
 import com.serotonin.modbus4j.ModbusFactory;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.exception.ModbusInitException;
@@ -9,6 +10,7 @@ import com.serotonin.modbus4j.msg.ModbusRequest;
 import com.serotonin.modbus4j.msg.ModbusResponse;
 import com.serotonin.modbus4j.msg.ReadInputRegistersRequest;
 import com.serotonin.modbus4j.sero.util.queue.ByteQueue;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * modbus链接
@@ -18,6 +20,7 @@ import com.serotonin.modbus4j.sero.util.queue.ByteQueue;
  * @author lyy
  * @date 2021/3/26 14:20
  */
+@Slf4j
 public class ModbusLink {
 
     private final ModbusMaster master;
@@ -47,4 +50,14 @@ public class ModbusLink {
         modbusResponse.write(byteQueue);
         return byteQueue;
     }
+
+    public static void main(String[] args) throws ModbusInitException, ModbusTransportException {
+        ModbusLink modbusLink = new ModbusLink("127.0.0.1", 502);
+        ByteQueue send = modbusLink.send(1, 0, 8);
+        System.out.println(send.toString());
+
+    }
+
+
+
 }

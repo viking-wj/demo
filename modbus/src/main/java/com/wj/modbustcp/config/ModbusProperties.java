@@ -21,5 +21,20 @@ import java.util.List;
 @Component
 @ConfigurationProperties(prefix = "modbus.master.global")
 public class ModbusProperties {
-    private List<String> addresses;
+
+    private int maxTotal;
+
+    private int maxIdle;
+
+    private int minIdle;
+
+    private long maxWaitMillis;
+
+    private int slaveId;
+
+    private int startAddress;
+
+    private int registerNumber;
+
+    private List<String> address;
 }
