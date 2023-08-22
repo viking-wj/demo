@@ -157,7 +157,7 @@ public class DevicePointManager {
 //        return paramPoint;
     }
 
-    public double[] getResult(ByteQueue data, String hexString) {
+    public double[] getResult(String hexString) {
         int[] digit = modbusDeviceProperties.getDigit();
         int[] bits = modbusDeviceProperties.getBit();
         String deviceId = "mims_01";

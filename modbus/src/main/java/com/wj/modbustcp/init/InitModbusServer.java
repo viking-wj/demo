@@ -1,20 +1,20 @@
 package com.wj.modbustcp.init;
 
-import com.serotonin.modbus4j.sero.util.queue.ByteQueue;
 import com.wj.modbustcp.config.ModbusProperties;
 import com.wj.modbustcp.connect.MasterRepository;
 import com.wj.modbustcp.connect.ModbusLink;
 import com.wj.modbustcp.connect.ModbusLinkFactory;
-import com.wj.modbustcp.deal.DevicePointManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.nio.charset.Charset;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.concurrent.ScheduledFuture;
 
 /**
  * Created by IntelliJ IDEA
@@ -29,11 +29,9 @@ public class InitModbusServer implements InitializingBean {
     @Resource
     private ModbusProperties modbusProperties;
 
-    @Resource
-    private MasterRepository masterRepository;
 
     @Resource
-    private DevicePointManager devicePointManager;
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
     @Bean(name = "masterRepository")
     public MasterRepository getMasterRepository(){
@@ -46,29 +44,32 @@ public class InitModbusServer implements InitializingBean {
         return new MasterRepository(modbusLinkFactory,config);
     }
 
+    @Bean
+    public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+        threadPoolTaskScheduler.setPoolSize(3);
+        threadPoolTaskScheduler.setRemoveOnCancelPolicy(true);
+        return threadPoolTaskScheduler;
+    }
+
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet()  {
         // 开启定时任务间隔时间内获取实时数据
-        ModbusLink modbusLink = masterRepository.borrowObject();
-        ByteQueue send = modbusLink.send(modbusProperties.getSlaveId(),
-                modbusProperties.getStartAddress(), modbusProperties.getRegisterNumber());
-       log.info(""+send);
-        // Convert ByteQueue to byte array
-        byte[] byteArray = send.peekAll();
-        // Convert byte array to hexadecimal string
-        String hexString = bytesToHexString(byteArray);
-        double[] result = devicePointManager.getResult(null, hexString);
-        System.out.println(Arrays.toString(result));
+        Task helloTask = new Task();
+        String corn = "0/2 * * * *  ?";
+        //将任务交给任务调度器执行
+        ScheduledFuture<?> schedule = threadPoolTaskScheduler.schedule(helloTask, new CronTrigger(corn));
+
+        //将任务包装成ScheduledFutureHolder
+        ScheduledFutureHolder scheduledFutureHolder = new ScheduledFutureHolder();
+        scheduledFutureHolder.setScheduledFuture(schedule);
+        scheduledFutureHolder.setRunnableClass(helloTask.getClass());
+        scheduledFutureHolder.setCorn(corn);
+
     }
 
-    private  String bytesToHexString(byte[] bytes) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : bytes) {
-            // Convert each byte to its hexadecimal representation
-            String hex = String.format("%02X", b & 0xFF);
-            hexString.append(hex);
-        }
-        return hexString.toString();
-    }
+
+
+
 }

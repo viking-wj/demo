@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("modbus.device")
 @Data
 public class ModbusDeviceProperties {
+
+    private String deviceId = "mims_device";
     private String[] task;
 
     private int[] bit;
