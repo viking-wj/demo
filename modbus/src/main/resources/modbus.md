@@ -47,16 +47,7 @@ public ModbusLink(String slaveHost, int slavePort) throws ModbusInitException {
         master.init();
     }
 ```
-#### 读取保留寄存器数据
-```java
- ModbusRequest modbusRequest = null;
-        modbusRequest = new ReadInputRegistersRequest(slaveId,readStartOff,readLength);
-        ModbusResponse modbusResponse = null;
-        modbusResponse = this.master.send(modbusRequest);
-        ByteQueue byteQueue = new ByteQueue(1024);
-        modbusResponse.write(byteQueue);
-        return byteQueue;
-```
+
 
 ### Apache Commons Pool对象池 GenericObjectPool
 #### GenericObjectPoolConfig 参数设置
@@ -76,11 +67,30 @@ public ModbusLink(String slaveHost, int slavePort) throws ModbusInitException {
 - testOnReturn 默认值 false； 设置为 true 时，当将资源返还个资源池时候，调用factory.validateObject()方法，验证资源的有效性,如果无效，则调用 factory.destroyObject()方法.
 
 #### 实现步骤
-1. makeObject 创建对象的具体实现 
+1. makeObject 创建对象的具体实现
 2. borrowObject 获取对象池中的对象简单而言就是去LinkedList中获取一个对象，如果不存在的话，要调用构造方法中第一个参数Factory工厂类的makeObject()方法去创建一个对象再获取，获取到对象后要调用validateObject方法判断该对象是否是可用的，如果是可用的才拿去使用。LinkedList容器减一。
 3. validateObject方法判断该对象是否是可用的。
 4. returnObject 先调用validateObject方法判断该对象是否是可用的，如果可用则归还到池中，LinkedList容器加一，如果是不可以的则则调用destroyObject方法进行销毁
 
+#### 读取保留寄存器数据
+```java
+ ModbusRequest modbusRequest = null;
+        modbusRequest = new ReadInputRegistersRequest(slaveId,readStartOff,readLength);
+        ModbusResponse modbusResponse = null;
+        modbusResponse = this.master.send(modbusRequest);
+        ByteQueue byteQueue = new ByteQueue(1024);
+        modbusResponse.write(byteQueue);
+        return byteQueue;
+```
+
+#### 字节数组值转换
+- 一条命令可以读出一个或多个数值
+- 数值可能需要进行转换（如十六进制转十进制，乘以0.01等）
+
 #### 知识链接  
 [Modbus TCP](https://www.cnblogs.com/wenhao-Web/p/12993675.html)  
 [GenericObjectPool 对象池](https://www.jianshu.com/p/2037d6c56b5f)
+
+#### 优化
+- 设备信息配置从配置文件优化到数据库中（考虑大量设备查询等待问题）
+- 定时下发指令读取保留寄存器是否可以异步处理，同步存在下发失败、没有回应的问题
