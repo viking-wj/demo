@@ -1,0 +1,11 @@
+spring:
+  r2dbc:
+    #	使用serverTimezone在控制台打印时间会出现乱码情况但不影响程序运行，翻阅资料之后换成serverZoneId可以解决这种问题。
+    #   url: r2dbc:mysql://localhost:3306/数据库?serverTimezone=GMT%2b8&characterEncoding=UTF-8
+    url: r2dbc:mysql://192.168.80.131:32006/webflux?serverZoneId=GMT%2b8&characterEncoding=UTF-8
+    username: root
+    password: wj1324
+  application:
+    name: webflux
+server:
+  port: 8080

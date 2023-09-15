@@ -52,8 +52,8 @@ public class ModbusLink {
     }
 
     public static void main(String[] args) throws ModbusInitException, ModbusTransportException {
-        ModbusLink modbusLink = new ModbusLink("127.0.0.1", 502);
-        ByteQueue send = modbusLink.send(1, 0, 8);
+        ModbusLink modbusLink = new ModbusLink("192.168.1.34", 8888);
+        ByteQueue send = modbusLink.send(1, 2000, 4);
         System.out.println(send.toString());
 
     }
