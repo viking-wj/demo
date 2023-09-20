@@ -12,6 +12,7 @@
         <module>kafka</module>
         <module>modbus</module>
         <module>webflux</module>
+        <module>ServerSentEvents</module>
     </modules>
     <packaging>pom</packaging>
 
