@@ -17,12 +17,13 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ *  接口路径 ws://localhost:8087/webSocket/userId;
  * @author SanShi
  * @date 2023/09/20
  */
 @Component
 @Slf4j
-@ServerEndpoint("/websocket/{userId}")  // 接口路径 ws://localhost:8087/webSocket/userId;
+@ServerEndpoint("/websocket/{userId}")
 @Data
 public class WebSocket {
 
@@ -45,7 +46,7 @@ public class WebSocket {
     /**
      * 用来存在线连接用户信息
      */
-    private static ConcurrentHashMap<String, Session> sessionPool = new ConcurrentHashMap<String, Session>();
+    private static ConcurrentHashMap<String, Session> sessionPool = new ConcurrentHashMap<>();
 
     /**
      * 链接成功调用的方法
@@ -118,7 +119,10 @@ public class WebSocket {
         }
     }
 
-    // 此为单点消息
+    /**
+     * 此为单点消息
+     *
+     */
     public void sendOneMessage(String userId, String message) {
         Session session = sessionPool.get(userId);
         if (session != null && session.isOpen()) {
