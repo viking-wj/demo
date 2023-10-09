@@ -1,6 +1,5 @@
 package com.wj.array;
 
-import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA

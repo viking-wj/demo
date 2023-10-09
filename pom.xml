@@ -14,6 +14,7 @@
         <module>webflux</module>
         <module>notification</module>
         <module>algorithms</module>
+        <module>crawler</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -29,6 +30,8 @@
         <modbus4j.version>3.0.5</modbus4j.version>
         <commons-lang.version>2.6</commons-lang.version>
         <r2dbc-mysql.version>0.8.2.RELEASE</r2dbc-mysql.version>
+        <webmagic-core>0.7.3</webmagic-core>
+        <webmagic-extend>0.7.3</webmagic-extend>
     </properties>
 
     <dependencies>
@@ -103,6 +106,16 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-websocket</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>us.codecraft</groupId>
+                <artifactId>webmagic-core</artifactId>
+                <version>${webmagic-core}</version>
+            </dependency>
+            <dependency>
+                <groupId>us.codecraft</groupId>
+                <artifactId>webmagic-extension</artifactId>
+                <version>${webmagic-extend}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

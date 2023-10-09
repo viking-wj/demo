@@ -1,7 +1,5 @@
-package com.wj;
+package com.wj.array;
 
-import com.wj.array.MyArrayList;
-import org.junit.Test;
 
 /**
  * Created by IntelliJ IDEA
