@@ -1,4 +1,14 @@
-### 爬虫demo模块
-#### HttpURLConnection 模拟请求获取响应数据
-#### 正则/jsoup/xpath 处理响应html
-#### Selenium 处理动态js网站
+# crawler
+### Downloader
+    - HttpClient
+### PageProcessor
+    - Jsoup 解析HTML
+    - Xsoup 解析XPath
+### Scheduler
+    - JDK内存队列
+### Pipeline
+    - 处理结果
+
+## reference
+- Spider 
+![img.png](static/img.png)
