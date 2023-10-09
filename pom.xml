@@ -13,6 +13,7 @@
         <module>modbus</module>
         <module>webflux</module>
         <module>notification</module>
+        <module>algorithms</module>
     </modules>
     <packaging>pom</packaging>
 

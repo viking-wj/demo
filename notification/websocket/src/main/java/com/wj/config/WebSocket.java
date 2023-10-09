@@ -1,6 +1,7 @@
 package com.wj.config;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,6 +87,7 @@ public class WebSocket {
     @OnMessage
     public void onMessage(String message) {
         log.info("【websocket消息】收到客户端消息:" + message);
+        sendOneMessage(userId,message+" PONG");
     }
 
     /**
@@ -135,7 +137,11 @@ public class WebSocket {
         }
     }
 
-    // 此为单点消息(多人)
+    /**
+     *  此为单点消息(多人)
+     * @param userIds
+     * @param message
+     */
     public void sendMoreMessage(String[] userIds, String message) {
         for (String userId : userIds) {
             Session session = sessionPool.get(userId);
