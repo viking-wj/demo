@@ -38,8 +38,8 @@ public class MyArrayList<T> {
     public void add(int index, T data) {
         expansion();
         // 后移数据
-        for (int i = size-1; i >= index; i--) {
-            array[i+1] = array[i];
+        for (int i = size - 1; i >= index; i--) {
+            array[i + 1] = array[i];
         }
         array[index] = data;
         size++;
@@ -55,12 +55,14 @@ public class MyArrayList<T> {
     }
 
     public void del(int index) {
-        if (index != size-1) {
+        if (index != size - 1) {
             // 前移数据进行覆盖
             for (int i = index; i < size; i++) {
                 array[i] = array[i + 1];
             }
         }
+        // 释放对象引用，防止内存溢出
+        array[size] = null;
         size--;
     }
 

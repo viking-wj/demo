@@ -3,16 +3,21 @@ package com.wj;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
+import us.codecraft.webmagic.pipeline.JsonFilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
+
+import java.util.List;
 
 /**
  * @author SanShi
  */
 public class GithubRepoPageProcessor implements PageProcessor {
 
-    private Site site = Site.me().setRetryTimes(3).setSleepTime(100);
+    // 部分一：抓取网站的相关配置，包括编码、抓取间隔、重试次数等
+    private Site site = Site.me().setRetryTimes(3).setSleepTime(1000);
 
     @Override
+    // process是定制爬虫逻辑的核心接口，在这里编写抽取逻辑
     public void process(Page page) {
         page.addTargetRequests(page.getHtml().links().regex("(https://github\\.com/\\w+/\\w+)").all());
         page.putField("author", page.getUrl().regex("https://github\\.com/(\\w+)/.*").toString());
@@ -30,6 +35,14 @@ public class GithubRepoPageProcessor implements PageProcessor {
     }
 
     public static void main(String[] args) {
-        Spider.create(new GithubRepoPageProcessor()).addUrl("https://github.com/code4craft").thread(5).run();
+
+        Spider.create(new GithubRepoPageProcessor())
+                //从"https://github.com/"开始抓
+                .addUrl("https://github.com/code4craft")
+                .addPipeline(new JsonFilePipeline("D:\\webmagic\\"))
+                //开启5个线程抓取
+                .thread(5)
+                //启动爬虫
+                .run();
     }
 }
