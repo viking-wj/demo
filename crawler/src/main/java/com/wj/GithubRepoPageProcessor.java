@@ -3,7 +3,6 @@ package com.wj;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
-import us.codecraft.webmagic.pipeline.JsonFilePipeline;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.util.List;
@@ -39,7 +38,6 @@ public class GithubRepoPageProcessor implements PageProcessor {
         Spider.create(new GithubRepoPageProcessor())
                 //从"https://github.com/"开始抓
                 .addUrl("https://github.com/code4craft")
-                .addPipeline(new JsonFilePipeline("D:\\webmagic\\"))
                 //开启5个线程抓取
                 .thread(5)
                 //启动爬虫
