@@ -16,6 +16,7 @@
         <module>algorithms</module>
         <module>crawler</module>
         <module>FlinkTutorial</module>
+        <module>design</module>
     </modules>
     <packaging>pom</packaging>
 
