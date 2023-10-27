@@ -17,6 +17,7 @@
         <module>crawler</module>
         <module>FlinkTutorial</module>
         <module>design</module>
+        <module>mqtt</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -38,6 +39,9 @@
         <flink.version>1.13.0</flink.version>
         <java.version>1.8</java.version>
         <scala.binary.version>2.12</scala.binary.version>
+        <poi.version>4.1.2</poi.version>
+        <poi-ooxml.version>4.1.2</poi-ooxml.version>
+        <mqttv3-version>1.2.2</mqttv3-version>
     </properties>
 
     <dependencies>
@@ -150,6 +154,22 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
                 <version>${selenium-java}</version>
+            </dependency>
+            <!-- poi包 -->
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${poi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi-ooxml</artifactId>
+                <version>${poi-ooxml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.paho</groupId>
+                <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+                <version>${mqttv3-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
