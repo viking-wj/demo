@@ -1,4 +1,4 @@
-package com.wj.strategy;
+package com.wj.strategy.demo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

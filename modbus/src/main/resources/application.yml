@@ -7,7 +7,7 @@ modbus:
   master:
     global:
       address:
-        - 127.0.0.1:502
+        - 192.168.1.88:502
       maxTotal: 1
       maxIdle: 1
       maxWaitMillis: 1000

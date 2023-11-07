@@ -18,6 +18,7 @@
         <module>FlinkTutorial</module>
         <module>design</module>
         <module>mqtt</module>
+        <module>servlet</module>
     </modules>
     <packaging>pom</packaging>
 

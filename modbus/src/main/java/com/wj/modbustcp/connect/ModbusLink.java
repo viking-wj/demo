@@ -37,27 +37,26 @@ public class ModbusLink {
         master.init();
     }
 
-    public void closeConnect(){
+    public void closeConnect() {
         this.master.destroy();
     }
 
     public ByteQueue send(int slaveId, int readStartOff, int readLength) throws ModbusTransportException {
         ModbusRequest modbusRequest = null;
-        modbusRequest = new ReadInputRegistersRequest(slaveId,readStartOff,readLength);
+        modbusRequest = new ReadInputRegistersRequest(slaveId, readStartOff, readLength);
         ModbusResponse modbusResponse = null;
         modbusResponse = this.master.send(modbusRequest);
+
         ByteQueue byteQueue = new ByteQueue(1024);
         modbusResponse.write(byteQueue);
         return byteQueue;
     }
 
     public static void main(String[] args) throws ModbusInitException, ModbusTransportException {
-        ModbusLink modbusLink = new ModbusLink("192.168.1.34", 8888);
-        ByteQueue send = modbusLink.send(1, 2000, 4);
+        ModbusLink modbusLink = new ModbusLink("192.168.1.88", 502);
+        ByteQueue send = modbusLink.send(1, 1000, 3);
         System.out.println(send.toString());
-
     }
-
 
 
 }
