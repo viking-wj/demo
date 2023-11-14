@@ -19,13 +19,14 @@
         <module>design</module>
         <module>mqtt</module>
         <module>servlet</module>
+        <module>opc</module>
     </modules>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
+        <version>2.7.16</version>
     </parent>
 
     <properties>
@@ -43,6 +44,7 @@
         <poi.version>4.1.2</poi.version>
         <poi-ooxml.version>4.1.2</poi-ooxml.version>
         <mqttv3-version>1.2.2</mqttv3-version>
+        <spring-boot-version>2.7.16</spring-boot-version>
     </properties>
 
     <dependencies>
@@ -61,7 +63,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>3.1.0</version>
+            <version>${spring-boot-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -78,7 +80,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>3.1.0</version>
+            <version>${spring-boot-version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.logging.log4j</groupId>
