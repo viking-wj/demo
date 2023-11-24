@@ -20,6 +20,7 @@
         <module>mqtt</module>
         <module>servlet</module>
         <module>opc</module>
+        <module>netty</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -45,6 +46,7 @@
         <poi-ooxml.version>4.1.2</poi-ooxml.version>
         <mqttv3-version>1.2.2</mqttv3-version>
         <spring-boot-version>2.7.16</spring-boot-version>
+        <netty-all-version>4.1.91.Final</netty-all-version>
     </properties>
 
     <dependencies>
@@ -173,6 +175,11 @@
                 <groupId>org.eclipse.paho</groupId>
                 <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
                 <version>${mqttv3-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty-all-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
