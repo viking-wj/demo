@@ -1,5 +1,3 @@
-package com.wj.opc.pool;
-
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.identity.AnonymousProvider;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
@@ -30,17 +28,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author w
- * {@code @date} 2023/11/14
+ * @date: 2023/11/22
+ * {@code @time:} 14:52
+ * Description:
  */
-public class OpcLink {
+public class Demo {
+    private final static String endPointUrl = "opc.tcp://127.0.0.1:49320";
     /**
+     *
+     *
      * 创建OPC UA客户端
      * @return
      * @throws Exception
      */
-    public static OpcUaClient createClient() throws Exception {
+    private static OpcUaClient createClient() throws Exception {
         //opc ua服务端地址
-        final String endPointUrl = "opc.tcp://127.0.0.1:49320";
+
         Path securityTempDir = Paths.get(System.getProperty("java.io.tmpdir"), "security");
         Files.createDirectories(securityTempDir);
         if (!Files.exists(securityTempDir)) {
@@ -57,11 +60,10 @@ public class OpcLink {
                                 .setApplicationUri("urn:eclipse:milo:examples:client")
                                 //访问方式
                                 .setIdentityProvider(new AnonymousProvider())
-                                .setRequestTimeout(UInteger.valueOf(5000))
+                                .setRequestTimeout(UInteger.valueOf(500))
                                 .build()
         );
     }
-
     /**
      * 遍历树形节点
      *
@@ -261,5 +263,20 @@ public class OpcLink {
         //持续监听
         eventLatch.await();
     }
+
+
+
+
+
+    public static void main(String[] args) throws Exception {
+        OpcUaClient client = createClient();
+        client.connect().get();
+        browseNode(client,null);
+//        readNode(client);
+//        writeNodeValue(client);
+//        subscribe(client);
+//      managedSubscriptionEvent(client);
+    }
+
 
 }
