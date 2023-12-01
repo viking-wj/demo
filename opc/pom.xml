@@ -24,9 +24,16 @@
             <artifactId>sdk-client</artifactId>
             <version>0.6.8</version>
         </dependency>
+        <!--引入milo服务端依赖-->
         <dependency>
             <groupId>org.eclipse.milo</groupId>
             <artifactId>sdk-server</artifactId>
+            <version>0.6.8</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.eclipse.milo/dictionary-manager -->
+        <dependency>
+            <groupId>org.eclipse.milo</groupId>
+            <artifactId>dictionary-manager</artifactId>
             <version>0.6.8</version>
         </dependency>
         <!--数字证书解析依赖-->

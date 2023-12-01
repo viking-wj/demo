@@ -17,6 +17,7 @@ import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
 import org.eclipse.milo.opcua.stack.core.types.structured.MonitoredItemCreateRequest;
 import org.eclipse.milo.opcua.stack.core.types.structured.MonitoringParameters;
+import org.eclipse.milo.opcua.stack.core.types.structured.Node;
 import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 
 import java.nio.file.Files;
@@ -25,27 +26,33 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 /**
  * @author w
  * {@code @date} 2023/11/14
+ * Description: OPC 客户端连接
  */
-public class OpcLink {
+public class OpcClientLink {
     /**
      * 创建OPC UA客户端
-     * @return
-     * @throws Exception
+     *
+     * @return OPC 连接
+     * @throws Exception 异常
      */
     public static OpcUaClient createClient() throws Exception {
         //opc ua服务端地址
-        final String endPointUrl = "opc.tcp://127.0.0.1:49320";
+        final String endPointUrl = "opc.tcp://127.0.0.1:12686";
         Path securityTempDir = Paths.get(System.getProperty("java.io.tmpdir"), "security");
         Files.createDirectories(securityTempDir);
         if (!Files.exists(securityTempDir)) {
             throw new Exception("unable to create security dir: " + securityTempDir);
         }
+
         return OpcUaClient.create(endPointUrl,
                 endpoints ->
                         endpoints.stream()
@@ -55,7 +62,7 @@ public class OpcLink {
                         configBuilder
                                 .setApplicationName(LocalizedText.english("eclipse milo opc-ua client"))
                                 .setApplicationUri("urn:eclipse:milo:examples:client")
-                                //访问方式
+                                //访问方式 匿名访问无需账号密码证书
                                 .setIdentityProvider(new AnonymousProvider())
                                 .setRequestTimeout(UInteger.valueOf(5000))
                                 .build()
@@ -67,7 +74,6 @@ public class OpcLink {
      *
      * @param client OPC UA客户端
      * @param uaNode 节点
-     * @throws Exception
      */
     private static void browseNode(OpcUaClient client, UaNode uaNode) throws Exception {
         List<? extends UaNode> nodes;
@@ -81,57 +87,63 @@ public class OpcLink {
             if (Objects.requireNonNull(nd.getBrowseName().getName()).contains("_")) {
                 continue;
             }
-            System.out.println("Node= " + nd.getBrowseName().getName());
+//            System.out.println("Node= " + nd.getBrowseName().getName());
+            System.out.println("Node= " + nd.getNodeId());
             browseNode(client, nd);
         }
     }
+
     /**
      * 读取节点数据
      *
      * @param client OPC UA客户端
      * @throws Exception
      */
-    private static void readNode(OpcUaClient client) throws Exception {
+    private static void readNode(OpcUaClient client, String identifier) throws Exception {
         int namespaceIndex = 2;
-        String identifier = "Modbus_TCP.气象站.大气压强";
         //节点
         NodeId nodeId = new NodeId(namespaceIndex, identifier);
         //读取节点数据
         DataValue value = client.readValue(0.0, TimestampsToReturn.Neither, nodeId).get();
         //标识符
         identifier = String.valueOf(nodeId.getIdentifier());
+
         System.out.println(identifier + ": " + String.valueOf(value.getValue().getValue()));
     }
+
     /**
      * 写入节点数据
      *
-     * @param client
-     * @throws Exception
+     * @param client 客户端连接
+     * @throws Exception 异常
      */
-    private static void writeNodeValue(OpcUaClient client) throws Exception {
+    private static void writeNodeValue(OpcUaClient client, String identifier, Object value) throws Exception {
         //节点
-        NodeId nodeId = new NodeId(2, "通道 1.设备 1.标记 4");
+        NodeId nodeId = new NodeId(2, identifier);
         Short i = 3;
         //创建数据对象,此处的数据对象一定要定义类型，不然会出现类型错误，导致无法写入
-        DataValue nowValue = new DataValue(new Variant(i), null, null);
+        DataValue nowValue = new DataValue(new Variant(value), StatusCode.GOOD, DateTime.now());
         //写入节点数据
         StatusCode statusCode = client.writeValue(nodeId, nowValue).join();
         System.out.println("结果：" + statusCode.isGood());
-    }/**
+
+    }
+
+    /**
      * 订阅(单个)
      *
      * @param client
      * @throws Exception
      */
-    private static void subscribe(OpcUaClient client) throws Exception {
-        AtomicInteger a=new AtomicInteger();
+    private static void subscribe(OpcUaClient client, String identifier) throws Exception {
+        AtomicInteger a = new AtomicInteger();
         //创建发布间隔1000ms的订阅对象
         client
                 .getSubscriptionManager()
                 .createSubscription(1000.0)
                 .thenAccept(t -> {
                     //节点
-                    NodeId nodeId = new NodeId(2, "通道 1.设备 1.标记 4");
+                    NodeId nodeId = new NodeId(2, identifier);
                     ReadValueId readValueId = new ReadValueId(nodeId, AttributeId.Value.uid(), null, null);
                     //创建监控的参数
                     MonitoringParameters parameters = new MonitoringParameters(UInteger.valueOf(a.getAndIncrement()), 1000.0, null, UInteger.valueOf(10), true);
@@ -154,21 +166,7 @@ public class OpcLink {
         //持续订阅
         Thread.sleep(Long.MAX_VALUE);
     }
-    /**
-     * 批量订阅
-     *
-     * @param client
-     * @throws Exception
-     */
-//    private static void managedSubscriptionEvent(OpcUaClient client) throws Exception {
-//        final CountDownLatch eventLatch = new CountDownLatch(1);
-//
-//        //处理订阅业务
-//        handlerNode(client);
-//
-//        //持续监听
-//        eventLatch.await();
-//    }
+
 
     /**
      * 处理订阅业务
@@ -204,6 +202,7 @@ public class OpcLink {
             e.printStackTrace();
         }
     }
+
     /**
      * 自定义订阅监听
      */
@@ -234,8 +233,9 @@ public class OpcLink {
 
         /**
          * 重连时 尝试恢复之前的订阅失败时 会调用此方法
+         *
          * @param uaSubscription 订阅
-         * @param statusCode 状态
+         * @param statusCode     状态
          */
         public void onSubscriptionTransferFailed(UaSubscription uaSubscription, StatusCode statusCode) {
             System.out.println("恢复订阅失败 需要重新订阅");
@@ -243,6 +243,7 @@ public class OpcLink {
             handlerNode(client);
         }
     }
+
     /**
      * 批量订阅
      *
@@ -262,4 +263,30 @@ public class OpcLink {
         eventLatch.await();
     }
 
+
+    public static void main(String[] args) throws Exception {
+        OpcUaClient client = createClient();
+        client.connect().get();
+//        browseNode(client, null);
+
+        Runnable runnable = () -> {
+            while (true) {
+                try {
+                    int value = (int) (Math.random() * 100 + 1);
+                    System.out.println("写入数据：" + value);
+                    writeNodeValue(client, "HelloWorld/ScalarTypes/Int32", value);
+                    Thread.sleep(10 * 1000);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        new Thread(runnable).start();
+
+        subscribe(client, "HelloWorld/ScalarTypes/Int32");
+
+
+//        readNode(client,"HelloWorld/ScalarTypes/Int32");
+//      managedSubscriptionEvent(client);
+    }
 }
