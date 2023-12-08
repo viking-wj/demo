@@ -13,6 +13,7 @@ package com.wj.opc.examples.server;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.eclipse.milo.opcua.sdk.server.OpcUaServer;
 import org.eclipse.milo.opcua.sdk.server.api.config.OpcUaServerConfig;
+import org.eclipse.milo.opcua.sdk.server.identity.CompositeValidator;
 import org.eclipse.milo.opcua.sdk.server.identity.UsernameIdentityValidator;
 import org.eclipse.milo.opcua.sdk.server.identity.X509IdentityValidator;
 import org.eclipse.milo.opcua.sdk.server.util.HostnameUtil;
@@ -91,6 +92,7 @@ public class ExampleServer {
             throw new Exception("unable to create security temp dir: " + securityTempDir);
         }
 
+
         File pkiDir = securityTempDir.resolve("pki").toFile();
 
         LoggerFactory.getLogger(getClass())
@@ -98,18 +100,23 @@ public class ExampleServer {
         LoggerFactory.getLogger(getClass())
             .info("security pki dir: {}", pkiDir.getAbsolutePath());
 
+        // 加载密钥库和证书
         KeyStoreLoader loader = new KeyStoreLoader().load(securityTempDir);
 
+        // 创建证书管理器：
         DefaultCertificateManager certificateManager = new DefaultCertificateManager(
             loader.getServerKeyPair(),
             loader.getServerCertificateChain()
         );
 
+        // 创建受信任列表管理器
         DefaultTrustListManager trustListManager = new DefaultTrustListManager(pkiDir);
 
+        // 创建服务器证书验证器
         DefaultServerCertificateValidator certificateValidator =
             new DefaultServerCertificateValidator(trustListManager);
 
+        // 生成 HTTPS 证书
         KeyPair httpsKeyPair = SelfSignedCertificateGenerator.generateRsaKeyPair(2048);
 
         SelfSignedHttpsCertificateBuilder httpsCertificateBuilder = new SelfSignedHttpsCertificateBuilder(httpsKeyPair);
@@ -158,12 +165,12 @@ public class ExampleServer {
                     "eclipse milo example server",
                     OpcUaServer.SDK_VERSION,
                     "", DateTime.now()))
-//            .setCertificateManager(certificateManager)
-//            .setTrustListManager(trustListManager)
-//            .setCertificateValidator(certificateValidator)
-//            .setHttpsKeyPair(httpsKeyPair)
-//            .setHttpsCertificateChain(new X509Certificate[]{httpsCertificate})
-//            .setIdentityValidator(new CompositeValidator(identityValidator, x509IdentityValidator))
+            .setCertificateManager(certificateManager)
+            .setTrustListManager(trustListManager)
+            .setCertificateValidator(certificateValidator)
+            .setHttpsKeyPair(httpsKeyPair)
+            .setHttpsCertificateChain(new X509Certificate[]{httpsCertificate})
+            .setIdentityValidator(new CompositeValidator(identityValidator, x509IdentityValidator))
             .setProductUri("urn:eclipse:milo:example-server")
             .build();
 

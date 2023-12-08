@@ -167,11 +167,11 @@ public class ExampleNamespace extends ManagedNamespaceWithLifecycle {
             false
         ));
 
-        // Add the rest of the nodes
+        // Add the rest of the nodes 节点
         addVariableNodes(folderNode);
-
+        // 方法
         addSqrtMethod(folderNode);
-
+        // 事件
         addGenerateEventMethod(folderNode);
 
         try {
