@@ -187,5 +187,9 @@ private static void handlerNode(OpcUaClient client) {
 
 ### Milo Client API
 
-##### 连接
+### 节点
+#### 属性
+#### 方法
+方法则是由服务器提供给客户端所调用的方法
+#### 事件
 
