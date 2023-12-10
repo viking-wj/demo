@@ -48,7 +48,7 @@ public class KeyManager {
     private KeyPair serverKeyPair;
 
     // 加载密钥库的方法
-    KeyManager load(Path baseDir) throws Exception {
+    public KeyManager load(Path baseDir) throws Exception {
         OpcCertInfo certInfo = opcProperties.getCertInfo();
 
         // 密钥库中服务端证书的别名和密码
@@ -76,6 +76,7 @@ public class KeyManager {
                     .setCommonName("Keenyoda QiWu Server")
                     .setOrganization("Keenyoda")
                     .setOrganizationalUnit("QiWu")
+                    .setStateName("CA")
                     .setLocalityName("shenzhen")
                     .setCountryCode("CN");
 

@@ -6,7 +6,6 @@ import org.eclipse.milo.opcua.sdk.client.nodes.UaNode;
 import org.eclipse.milo.opcua.sdk.client.subscriptions.ManagedDataItem;
 import org.eclipse.milo.opcua.sdk.client.subscriptions.ManagedSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
-import org.eclipse.milo.opcua.stack.core.Identifiers;
 import org.eclipse.milo.opcua.stack.core.UaException;
 import org.eclipse.milo.opcua.stack.core.security.SecurityPolicy;
 import org.eclipse.milo.opcua.stack.core.types.builtin.*;
@@ -33,7 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Description:
  */
 public class Demo {
-    private final static String endPointUrl = "opc.tcp://127.0.0.1:49320";
+    private final static String endPointUrl = "opc.tcp://127.0.0.1:12686";
     /**
      *
      *
@@ -72,9 +71,10 @@ public class Demo {
      * @throws Exception
      */
     private static void browseNode(OpcUaClient client, UaNode uaNode) throws Exception {
+
         List<? extends UaNode> nodes;
         if (uaNode == null) {
-            nodes = client.getAddressSpace().browseNodes(Identifiers.ObjectsFolder);
+            nodes = client.getAddressSpace().browseNodes(new NodeId(2,"QIWU"));
         } else {
             nodes = client.getAddressSpace().browseNodes(uaNode);
         }
@@ -83,7 +83,7 @@ public class Demo {
             if (Objects.requireNonNull(nd.getBrowseName().getName()).contains("_")) {
                 continue;
             }
-            System.out.println("Node= " + nd.getBrowseName().getName());
+            System.out.println("Node= " + nd.getBrowseName().getName()+","+nd.getNodeId());
             browseNode(client, nd);
         }
     }
@@ -271,7 +271,7 @@ public class Demo {
     public static void main(String[] args) throws Exception {
         OpcUaClient client = createClient();
         client.connect().get();
-        browseNode(client,null);
+        browseNode(client, null);
 //        readNode(client);
 //        writeNodeValue(client);
 //        subscribe(client);

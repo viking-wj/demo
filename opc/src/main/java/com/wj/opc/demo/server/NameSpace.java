@@ -81,6 +81,7 @@ public class NameSpace extends ManagedNamespaceWithLifecycle {
 
         getLifecycleManager().addStartupTask(this::createAndAddNodes);
 
+        // 重写启动和停止方法
         getLifecycleManager().addLifecycle(new Lifecycle() {
             @Override
             public void startup() {
@@ -140,6 +141,7 @@ public class NameSpace extends ManagedNamespaceWithLifecycle {
     }
 
     private void addScalarNodes(UaFolderNode rootNode) {
+        // 创建一个对象节点
         UaFolderNode scalarTypesFolder = new UaFolderNode(
                 getNodeContext(),
                 newNodeId("QIWU/ScalarTypes"),
@@ -155,6 +157,7 @@ public class NameSpace extends ManagedNamespaceWithLifecycle {
             NodeId typeId = (NodeId) os[1];
             Variant variant = (Variant) os[2];
 
+            // 变量节点
             UaVariableNode node = new UaVariableNode.UaVariableNodeBuilder(getNodeContext())
                     .setNodeId(newNodeId("QIWU/ScalarTypes/" + name))
                     .setAccessLevel(AccessLevel.READ_WRITE)
@@ -165,7 +168,7 @@ public class NameSpace extends ManagedNamespaceWithLifecycle {
                     .setTypeDefinition(Identifiers.BaseDataVariableType)
                     .build();
 
-            // 网关.设备.监测属性.num
+
             node.setNodeId(newNodeId("QIWU.ScalarTypes." + name));
             node.setValue(new DataValue(variant));
 
@@ -200,6 +203,7 @@ public class NameSpace extends ManagedNamespaceWithLifecycle {
         ));
     }
     private void addSqrtMethod(UaFolderNode folderNode) {
+
         UaMethodNode methodNode = UaMethodNode.builder(getNodeContext())
                 .setNodeId(newNodeId("QIWU/sqrt(x)"))
                 .setBrowseName(newQualifiedName("sqrt(x)"))

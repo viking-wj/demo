@@ -21,6 +21,7 @@
         <module>servlet</module>
         <module>opc</module>
         <module>netty</module>
+        <module>bacnet</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -60,13 +61,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>${slf4j-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring-boot-version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

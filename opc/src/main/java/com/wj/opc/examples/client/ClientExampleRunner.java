@@ -13,6 +13,8 @@ package com.wj.opc.examples.client;
 import com.wj.opc.examples.server.ExampleServer;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
+import org.eclipse.milo.opcua.sdk.client.api.identity.CompositeProvider;
+import org.eclipse.milo.opcua.sdk.client.api.identity.UsernameProvider;
 import org.eclipse.milo.opcua.stack.client.security.DefaultClientCertificateValidator;
 import org.eclipse.milo.opcua.stack.core.Stack;
 import org.eclipse.milo.opcua.stack.core.security.DefaultTrustListManager;
@@ -83,6 +85,7 @@ public class ClientExampleRunner {
 
         DefaultClientCertificateValidator certificateValidator =
             new DefaultClientCertificateValidator(trustListManager);
+        UsernameProvider usernameProvider = new UsernameProvider("admin", "admin");
 
         return OpcUaClient.create(
             clientExample.getEndpointUrl(),
@@ -98,7 +101,7 @@ public class ClientExampleRunner {
                     .setCertificate(loader.getClientCertificate())
                     .setCertificateChain(loader.getClientCertificateChain())
                     .setCertificateValidator(certificateValidator)
-                    .setIdentityProvider(clientExample.getIdentityProvider())
+                    .setIdentityProvider(new CompositeProvider(usernameProvider))
                     .setRequestTimeout(uint(5000))
                     .build()
         );
