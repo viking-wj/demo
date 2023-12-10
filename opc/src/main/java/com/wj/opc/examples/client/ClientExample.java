@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 public interface ClientExample {
 
     default String getEndpointUrl() {
-        return "opc.tcp://192.168.1.88:12686/";
+        return "opc.tcp://127.0.0.1:12686/";
     }
 
     default Predicate<EndpointDescription> endpointFilter() {
