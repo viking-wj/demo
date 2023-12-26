@@ -22,6 +22,7 @@
         <module>opc</module>
         <module>netty</module>
         <module>bacnet</module>
+        <module>common</module>
     </modules>
     <packaging>pom</packaging>
 
